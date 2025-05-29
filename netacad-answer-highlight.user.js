@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.8
+// @version     1.0.9
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -98,10 +98,11 @@
     console.log("Question:", question);
 
     const url = dataSourceURL + question;
-    addLinkButton(questionElement, url);
 
     if (!isMultipleChoiceQuestion) {
       answerCache[question] = [];
+
+      addLinkButton(questionElement, url);
     } else if (!(question in answerCache)) {
       answerCache[question] = [];
 
@@ -130,6 +131,8 @@
               .replace(/[^a-z0-9]+$/i, "")
           );
         }
+
+        addLinkButton(questionElement, url);
       } catch (err) {
         console.warn("Failed to fetch answer:", err);
       }
