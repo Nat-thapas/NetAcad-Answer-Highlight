@@ -10,6 +10,8 @@
 // ==/UserScript==
 
 (function () {
+  const dataSourceURL = "https://itexamanswers.net/question/";
+
   function gmFetch(url, options = {}) {
     return new Promise((resolve, reject) => {
       GM.xmlHttpRequest({
@@ -60,7 +62,7 @@
 
     console.log("Question:", question);
 
-    const url = `https://itexamanswers.net/question/${question}`;
+    const url = dataSourceURL + question;
 
     if (!(question in answerCache)) {
       answerCache[question] = [];
