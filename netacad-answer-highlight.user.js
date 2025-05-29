@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.9
+// @version     1.0.10
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -108,6 +108,10 @@
 
       try {
         const answerResponse = await gmFetch(url);
+
+        if (!answerResponse.ok) {
+          throw Error("Response code is not OK");
+        }
 
         const answerData = await answerResponse.text();
         const answerMatches = [
