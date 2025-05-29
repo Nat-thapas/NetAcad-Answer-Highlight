@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.4
+// @version     1.0.5
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -81,7 +81,7 @@
       .shadowRoot.querySelector(".component__body-inner")
       .textContent.toLowerCase()
       .replaceAll(/[ ./]/g, "-")
-      .replaceAll(/[^\w-]/g, "")
+      .replaceAll(/[^a-z0-9-]/gi, "")
       .replaceAll(/-+/g, "-")
       .slice(0, 196)
       .replace(/-$/, "");
@@ -111,9 +111,13 @@
 
         for (const match of answerMatches) {
           answerCache[question].push(
-            decodeHtmlEntities(match[1].trim().toLowerCase())
+            decodeHtmlEntities(match[1])
+              .trim()
+              .toLowerCase()
               .replace(/[\u2018\u2019]/g, "'")
               .replace(/[\u201C\u201D]/g, '"')
+              .replace(/^[^a-z0-9]+/i, "")
+              .replace(/[^a-z0-9]+$/i, "")
           );
         }
       } catch (err) {
@@ -167,7 +171,9 @@
         .trim()
         .toLowerCase()
         .replace(/[\u2018\u2019]/g, "'")
-        .replace(/[\u201C\u201D]/g, '"');
+        .replace(/[\u201C\u201D]/g, '"')
+        .replace(/^[^a-z0-9]+/i, "")
+        .replace(/[^a-z0-9]+$/i, "");
 
       console.log("Choice:", choiceText);
 
