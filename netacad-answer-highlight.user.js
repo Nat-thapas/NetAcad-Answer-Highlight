@@ -42,29 +42,58 @@
     });
   }
 
+  function addLinkButton(element, url) {
+    if (element.hasAttribute("data-answer-link-appended")) {
+      return;
+    }
+
+    const linkElement = document.createElement("a");
+    linkElement.href = url;
+    linkElement.target = "_blank";
+    linkElement.style.color = "inherit";
+    linkElement.style.display = "inline-block";
+    linkElement.style.textDecoration = "none";
+    linkElement.style.verticalAlign = "middle";
+    linkElement.innerHTML =
+      '&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link-icon lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
+
+    element
+      .querySelector("base-view")
+      .shadowRoot.querySelector(".component__title-inner")
+      .appendChild(linkElement);
+
+    element.setAttribute("data-answer-link-appended", true);
+  }
+
   const answerCache = {};
 
   async function main(evnt) {
-    const questionElement = evnt.composedPath()[0].closest(".mcq__inner");
+    const questionElement = evnt.composedPath()[0].closest(".component__inner");
 
     if (questionElement === null) {
       return;
     }
 
+    const isMultipleChoiceQuestion = questionElement.classList.contains("mcq");
+
     const question = questionElement
       .querySelector("base-view")
-      .shadowRoot.querySelector(".mcq__body-inner")
+      .shadowRoot.querySelector(".component__body-inner")
       .textContent.toLowerCase()
       .replaceAll(/[ ./]/g, "-")
       .replaceAll(/[^\w-]/g, "")
       .replaceAll(/-+/g, "-")
-      .slice(0, 196);
+      .slice(0, 196)
+      .replace(/-$/, "");
 
     console.log("Question:", question);
 
     const url = dataSourceURL + question;
+    addLinkButton(questionElement, url);
 
-    if (!(question in answerCache)) {
+    if (!isMultipleChoiceQuestion) {
+      answerCache[question] = [];
+    } else if (!(question in answerCache)) {
       answerCache[question] = [];
 
       try {
@@ -92,9 +121,20 @@
       }
     }
 
-    console.log("Answers:", answerCache[question]);
+    if (isMultipleChoiceQuestion) {
+      console.log("Answers:", answerCache[question]);
+    } else {
+      console.log(
+        "Question is not multiple choice, answer parsing and highlighting is unsupported"
+      );
+      return;
+    }
 
     const widget = questionElement.querySelector(".mcq__widget");
+
+    if (widget === null) {
+      return;
+    }
 
     if (answerCache[question].length === 0) {
       console.warn(
@@ -102,7 +142,14 @@
       );
       for (const choice of widget.children) {
         const label = choice.querySelector(".mcq__item-label");
-        if (choice.querySelector('input[type="radio"]').checked) {
+        if (label === null) {
+          continue;
+        }
+        const input = choice.querySelector("input");
+        if (input === null) {
+          continue;
+        }
+        if (input.checked) {
           label.style.outline = `4px solid #ffcc31`;
         } else {
           label.style.outline = "none";
@@ -111,25 +158,13 @@
       return;
     }
 
-    const linkElement = document.createElement("a");
-    linkElement.href = url;
-    linkElement.target = "_blank";
-    linkElement.style.color = "inherit";
-    linkElement.style.display = "inline-block";
-    linkElement.style.textDecoration = "none";
-    linkElement.style.verticalAlign = "middle";
-    linkElement.innerHTML =
-      '&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link-icon lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
-
-    questionElement
-      .querySelector("base-view")
-      .shadowRoot.querySelector(".mcq__title-inner")
-      .appendChild(linkElement);
-
     for (const choice of widget.children) {
-      const choiceText = choice
-        .querySelector(".mcq__item-text-inner")
-        .textContent.trim()
+      const choiceTextElement = choice.querySelector(".mcq__item-text-inner");
+      if (choiceTextElement === null) {
+        continue;
+      }
+      const choiceText = choiceTextElement.textContent
+        .trim()
         .toLowerCase()
         .replace(/[\u2018\u2019]/g, "'")
         .replace(/[\u201C\u201D]/g, '"');
@@ -138,10 +173,14 @@
 
       const label = choice.querySelector(".mcq__item-label");
 
+      if (label === null) {
+        continue;
+      }
+
       if (answerCache[question].some((answer) => choiceText === answer)) {
         label.style.outline = `4px solid #6abf4b`;
         console.log("^ Is correct");
-      } else if (choice.querySelector('input[type="radio"]').checked) {
+      } else if (choice.querySelector("input").checked) {
         label.style.outline = `4px solid #ea5656`;
       } else {
         label.style.outline = "none";
