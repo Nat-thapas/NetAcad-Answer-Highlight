@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.2
+// @version     1.0.3
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -45,7 +45,7 @@
   const answerCache = {};
 
   async function main(evnt) {
-    const questionElement = evnt.originalTarget.closest(".mcq__inner");
+    const questionElement = evnt.composedPath()[0].closest(".mcq__inner");
 
     if (questionElement === null) {
       return;
