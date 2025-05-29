@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.10
+// @version     1.0.11
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -116,7 +116,7 @@
         const answerData = await answerResponse.text();
         const answerMatches = [
           ...answerData.matchAll(
-            /<span style="color: (?:#ff0000|red);">(?:<strong>)?(.*?)(?:<\/strong>)?<\/span>/g
+            /<span style="color: (?:#ff0000|red);">(?:<strong>)?(?:<b>)?(.*?)(?:<\/strong>)?(?:<\/b>)?<\/span>/g
           ),
           ...answerData.matchAll(/<li class="correct_answer">(.*?)<\/li>/g),
         ];
