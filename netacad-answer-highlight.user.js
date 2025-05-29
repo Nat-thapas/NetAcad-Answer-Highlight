@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.5
+// @version     1.0.6
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -76,12 +76,22 @@
 
     const isMultipleChoiceQuestion = questionElement.classList.contains("mcq");
 
-    const question = questionElement
+    const questionTextElement = questionElement
       .querySelector("base-view")
-      .shadowRoot.querySelector(".component__body-inner")
-      .textContent.toLowerCase()
+      ?.shadowRoot?.querySelector(".component__body-inner");
+
+    if (questionTextElement === null) {
+      return;
+    }
+
+    const question = decodeHtmlEntities(questionTextElement.textContent)
+      .trim()
+      .toLowerCase()
+      .replaceAll("&nbsp;", " ")
+      .replaceAll(/[\u2018\u2019]/g, "'")
+      .replaceAll(/[\u201C\u201D]/g, '"')
       .replaceAll(/[ ./]/g, "-")
-      .replaceAll(/[^a-z0-9-]/gi, "")
+      .replaceAll(/[^a-z0-9-]/g, "")
       .replaceAll(/-+/g, "-")
       .slice(0, 196)
       .replace(/-$/, "");
@@ -114,8 +124,9 @@
             decodeHtmlEntities(match[1])
               .trim()
               .toLowerCase()
-              .replace(/[\u2018\u2019]/g, "'")
-              .replace(/[\u201C\u201D]/g, '"')
+              .replaceAll("&nbsp;", " ")
+              .replaceAll(/[\u2018\u2019]/g, "'")
+              .replaceAll(/[\u201C\u201D]/g, '"')
               .replace(/^[^a-z0-9]+/i, "")
               .replace(/[^a-z0-9]+$/i, "")
           );
@@ -167,11 +178,12 @@
       if (choiceTextElement === null) {
         continue;
       }
-      const choiceText = choiceTextElement.textContent
+      const choiceText = decodeHtmlEntities(choiceTextElement.textContent)
         .trim()
         .toLowerCase()
-        .replace(/[\u2018\u2019]/g, "'")
-        .replace(/[\u201C\u201D]/g, '"')
+        .replaceAll("&nbsp;", " ")
+        .replaceAll(/[\u2018\u2019]/g, "'")
+        .replaceAll(/[\u201C\u201D]/g, '"')
         .replace(/^[^a-z0-9]+/i, "")
         .replace(/[^a-z0-9]+$/i, "");
 
