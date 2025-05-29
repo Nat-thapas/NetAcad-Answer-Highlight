@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.7
+// @version     1.0.8
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -89,7 +89,7 @@
       .toLowerCase()
       .replaceAll(/[\u2018\u2019]/g, "'")
       .replaceAll(/[\u201C\u201D]/g, '"')
-      .replaceAll(/[ ./\u00A0]/g, "-")
+      .replaceAll(/[\s./\u00A0]/g, "-")
       .replaceAll(/[^a-z0-9-]/g, "")
       .replaceAll(/-+/g, "-")
       .slice(0, 196)
