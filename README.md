@@ -1,7 +1,7 @@
 # Installation
 
 1. Have a user script manager extension such as Violentmonkey ([Chrome](https://chromewebstore.google.com/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag), [Firefox](https://addons.mozilla.org/en-US/firefox/addon/violentmonkey/))
-2. Click this: [Install](https://github.com/Nat-thapas/netacad-answer-highlight/raw/main/netacad-answer-highlight.user.js)
+2. Click this: [Install](https://github.com/Nat-thapas/NetAcad-Answer-Highlight/raw/main/netacad-answer-highlight.user.js)
 
 # Usage
 

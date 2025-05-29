@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name        NetAcad Answer Highlight
-// @namespace   Violentmonkey Scripts
+// @namespace   https://natthapas.dev
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.1
+// @version     1.0.2
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source
 // ==/UserScript==
