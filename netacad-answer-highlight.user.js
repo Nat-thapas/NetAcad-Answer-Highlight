@@ -6,7 +6,7 @@
 // @grant       GM.xmlHttpRequest
 // @version     1.0.2
 // @author      Natthapas
-// @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source
+// @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
 
 (function () {
