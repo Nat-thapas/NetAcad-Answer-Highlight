@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.12
+// @version     1.0.13
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -180,6 +180,8 @@
       return;
     }
 
+    let correctChoiceExists = false;
+
     for (const choice of widget.children) {
       const choiceTextElement = choice.querySelector(".mcq__item-text-inner");
       if (choiceTextElement === null) {
@@ -204,12 +206,34 @@
       }
 
       if (answerCache[question].some((answer) => choiceText === answer)) {
+        correctChoiceExists = true;
         label.style.outline = `4px solid #6abf4b`;
         console.log("^ Is correct");
       } else if (choice.querySelector("input").checked) {
         label.style.outline = `4px solid #ea5656`;
       } else {
         label.style.outline = "none";
+      }
+    }
+
+    if (!correctChoiceExists) {
+      console.warn(
+        "No correct choice exists, this is probably due to a parsing failure"
+      );
+      for (const choice of widget.children) {
+        const label = choice.querySelector(".mcq__item-label");
+        if (label === null) {
+          continue;
+        }
+        const input = choice.querySelector("input");
+        if (input === null) {
+          continue;
+        }
+        if (input.checked) {
+          label.style.outline = `4px solid #ffcc31`;
+        } else {
+          label.style.outline = "none";
+        }
       }
     }
   }
