@@ -4,13 +4,14 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.13
+// @version     1.1.0
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
 
 (function () {
   const dataSourceURL = "https://itexamanswers.net/question/";
+  const searchEngineURL = "https://www.google.com/search?udm=14&q=";
 
   function gmFetch(url, options = {}) {
     return new Promise((resolve, reject) => {
@@ -84,11 +85,13 @@
       return;
     }
 
-    const question = decodeHtmlEntities(questionTextElement.textContent)
+    const rawIshQuestion = decodeHtmlEntities(questionTextElement.textContent)
       .trim()
       .toLowerCase()
       .replaceAll(/[\u2018\u2019]/g, "'")
-      .replaceAll(/[\u201C\u201D]/g, '"')
+      .replaceAll(/[\u201C\u201D]/g, '"');
+
+    const question = rawIshQuestion
       .replaceAll(/[\s./\u00A0]/g, "-")
       .replaceAll(/[^a-z0-9-]/g, "")
       .replaceAll(/-+/g, "-")
@@ -140,6 +143,8 @@
         addLinkButton(questionElement, url);
       } catch (err) {
         console.warn("Failed to fetch answer:", err);
+
+        addLinkButton(questionElement, searchEngineURL + rawIshQuestion);
       }
     }
 
