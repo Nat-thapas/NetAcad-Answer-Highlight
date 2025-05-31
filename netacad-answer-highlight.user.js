@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.0.11
+// @version     1.0.12
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -128,9 +128,10 @@
             decodeHtmlEntities(match[1])
               .trim()
               .toLowerCase()
-              .replaceAll(/\u00A0/g, " ")
+              .replaceAll(/[\s\u00A0]/g, " ")
               .replaceAll(/[\u2018\u2019]/g, "'")
               .replaceAll(/[\u201C\u201D]/g, '"')
+              .replaceAll(/ +/g, " ")
               .replace(/^[^a-z0-9]+/i, "")
               .replace(/[^a-z0-9]+$/i, "")
           );
@@ -187,9 +188,10 @@
       const choiceText = decodeHtmlEntities(choiceTextElement.textContent)
         .trim()
         .toLowerCase()
-        .replaceAll(/\u00A0/g, " ")
+        .replaceAll(/[\s\u00A0]/g, " ")
         .replaceAll(/[\u2018\u2019]/g, "'")
         .replaceAll(/[\u201C\u201D]/g, '"')
+        .replaceAll(/ +/g, " ")
         .replace(/^[^a-z0-9]+/i, "")
         .replace(/[^a-z0-9]+$/i, "");
 
