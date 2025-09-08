@@ -4,7 +4,7 @@
 // @match       *://www.netacad.com/*
 // @run-at      document-idle
 // @grant       GM.xmlHttpRequest
-// @version     1.1.1
+// @version     1.2.0
 // @author      Natthapas
 // @description Highlight the correct and wrong answer when you answer a question. Yellow highlight means that question doesn't exist on the data source.
 // ==/UserScript==
@@ -158,7 +158,7 @@
       return;
     }
 
-    const widget = questionElement.querySelector(".mcq__widget");
+    const widget = questionElement.querySelector(".mcq__widget-inner");
 
     if (widget === null) {
       return;
